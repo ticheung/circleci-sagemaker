@@ -41,3 +41,4 @@ workflows:
             model1/.* deploy-model1 true
             model2/.* deploy-model2 true
       - gather-data
+ 
