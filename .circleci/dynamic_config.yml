@@ -25,7 +25,7 @@ jobs:
       - run: echo $MY_ENV_VAR
 
 workflows:
-  gather-data
+  gather-data-workflow:
     jobs:
       - gather-data
   model1:
