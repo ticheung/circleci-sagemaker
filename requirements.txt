@@ -1,0 +1,4 @@
+awscliv2
+pandas
+boto3
+sagemaker

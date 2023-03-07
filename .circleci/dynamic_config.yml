@@ -18,16 +18,21 @@ executors:
       # MY_ENV_VAR: $MY_ENV_VAR
  
 jobs:
-  gather-data:
+  example-job:
     executor: python
     steps:
       - checkout
       - run: echo $MY_ENV_VAR
+      - run: pip install -r requirements.txt
+  gather-data:
+    executor: python
+    steps:
+      - checkout
 
 workflows:
-  gather-data-workflow:
+  example-workflow:
     jobs:
-      - gather-data
+      - example-job
   model1:
     when: << pipeline.parameters.deploy-model1 >>
     jobs:
