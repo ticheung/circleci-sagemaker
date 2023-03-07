@@ -3,6 +3,9 @@ version: 2.1
 orbs:
   path-filtering: circleci/path-filtering@0.1.3
 
+# This allows you to use CircleCI's dynamic configuration feature
+setup: true
+
 parameters:
   deploy-model1:
     type: boolean
