@@ -5,7 +5,7 @@ import os
 
 BUCKET = "circleci-sagemaker"
 
-role = sagemaker.get_execution_role()
+role = os.environ['SAGEMAKER_EXECUTION_ROLE']
 sess = sagemaker.Session()
 prefix = "xgboost-churn"
 
