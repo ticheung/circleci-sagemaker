@@ -6,32 +6,8 @@ orbs:
 # This allows you to use CircleCI's dynamic configuration feature
 setup: true
 
-parameters:
-  deploy-model1:
-    type: boolean
-    default: false
-  deploy-model2:
-    type: boolean
-    default: false
-
-executors:
-  python:
-    docker:
-      - image: python:3.11
-    environment:
-      AWS_ACCESS_KEY: $AWS_ACCESS_KEY
-      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-      MY_ENV_VAR: $MY_ENV_VAR
-
-jobs:
-  gather-data:
-    executor: python
-    steps:
-      - checkout
-      - run: echo $MY_ENV_VAR
-
 workflows:
-  train-and-deploy:
+  run-filter:
     jobs:
       - path-filtering/filter:
           # Compare files on main
@@ -40,5 +16,5 @@ workflows:
           mapping: |
             model1/.* deploy-model1 true
             model2/.* deploy-model2 true
-      - gather-data
+          config-path: ".circleci/dynamic_config.yml"
  
