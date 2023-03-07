@@ -7,6 +7,7 @@ BUCKET = "circleci-sagemaker"
 
 role = os.environ['SAGEMAKER_EXECUTION_ROLE']
 aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
+print(aws_access_key_id)
 aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
 region_name = "us-east-1"
 prefix = "xgboost-churn"
