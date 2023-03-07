@@ -1,0 +1,38 @@
+version: 2.1
+
+parameters:
+  deploy-model1:
+    type: boolean
+    default: false
+  deploy-model2:
+    type: boolean
+    default: false
+
+executors:
+  python:
+    docker:
+      - image: python:3.11
+    environment:
+      AWS_ACCESS_KEY: $AWS_ACCESS_KEY
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      MY_ENV_VAR: $MY_ENV_VAR
+
+jobs:
+  gather-data:
+    executor: python
+    steps:
+      - checkout
+      - run: echo $MY_ENV_VAR
+
+workflows:
+  gather-data
+    jobs:
+      - gather-data
+  model1:
+    when: << pipeline.parameters.deploy-model1 >>
+    jobs:
+      - gather-data
+  model2:
+    when: << pipeline.parameters.deploy-model2 >>
+    jobs:
+      - gather-data
