@@ -23,11 +23,12 @@ jobs:
     steps:
       - checkout
       - run: echo $MY_ENV_VAR
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt --upgrade
   gather-data:
     executor: python
     steps:
       - checkout
+      - run: python model1/gather_data.py
 
 workflows:
   example-workflow:
