@@ -1,22 +1,24 @@
 version: 2.1
 
-orbs:
-  path-filtering: circleci/path-filtering@0.1.3
+executors:
+  python:
+    docker:
+      - image: python:3.11
+    environment:
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      SAGEMAKER_EXECUTION_ROLE: $SAGEMAKER_EXECUTION_ROLE
 
-# This allows you to use CircleCI's dynamic configuration feature
-setup: true
+jobs:
+  gather-data:
+    executor: python
+    steps:
+      - checkout
+      - run: echo $AWS_ACCESS_KEY_ID
+      - run: pip install -r requirements.txt --upgrade
+      - run: python model1/gather_data.py
 
-# The main purpose of this setup config is to identify which folders contain code changes,
-# letting us choose which model to retrain and redeploy
 workflows:
-  run-filter:
+  model1:
     jobs:
-      - path-filtering/filter:
-          # Compare files on main
-          base-revision: main
-          # 3-column space-separated table for mapping: `path-to-test parameter-toset value-for-parameter` for each row
-          mapping: |
-            model1/.* deploy-model1 true
-            model2/.* deploy-model2 true
-          config-path: ".circleci/dynamic_config.yml"
- 
+      - gather-data
