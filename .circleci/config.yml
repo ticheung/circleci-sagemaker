@@ -11,15 +11,30 @@ parameters:
     type: boolean
     default: false
 
+executors:
+  python:
+    docker:
+      - image: python:3.11
+    environment:
+      AWS_ACCESS_KEY: $AWS_ACCESS_KEY
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      MY_ENV_VAR: $MY_ENV_VAR
+
 jobs:
   gather-data:
-    docker:
-      - image: cimg/python:3.11.2
+    executor: python
     steps:
       - checkout
-      - run: echo "gather-data"
+      - run: echo $MY_ENV_VAR
 
 workflows:
   train-and-deploy:
     jobs:
+      - path-filtering/filter:
+          # Compare files on main
+          base_revision: main
+          # 3-column space-separated table for mapping: `path-to-test parameter-toset value-for-parameter` for each row
+          mapping: |
+            model1/.* deploy-model1 true
+            model2/.* deploy-model2 true
       - gather-data
