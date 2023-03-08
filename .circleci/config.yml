@@ -17,4 +17,5 @@ jobs:
 workflows:
   model1:
     jobs:
-      - model1-train-and-deploy
+      - model1-train-and-deploy:
+          context: model1
