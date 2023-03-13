@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import io
+from zipfile import ZipFile
 
 bucket = os.environ["AWS_BUCKET"]
 region_name = os.environ["AWS_REGION"]
@@ -15,18 +16,20 @@ s3_client = boto_session.client(service_name="s3")
 
 
 # Data retrieval and processing taken from
-# https://github.com/aws/amazon-sagemaker-examples/blob/main/introduction_to_applying_machine_learning/xgboost_customer_churn/xgboost_customer_churn.ipynb
+# https://github.com/aws/amazon-sagemaker-examples/blob/main/introduction_to_applying_machine_learning/credit_card_fraud_detector/credit_card_fraud_detector.ipynb
 # You would likely replace this part for your own use case, such as querying from Snowflake or Redshift
-s3_client.download_file(f"sagemaker-sample-files", "datasets/tabular/synthetic/churn.txt", "churn.txt")
-churn = pd.read_csv("./churn.txt")
+s3_client.download_file(f"sagemaker-solutions-prod", "Fraud-detection-using-machine-learning/3.4.1/data/creditcardfraud.zip", "creditcardfraud.zip")
+with ZipFile("creditcardfraud.zip", "r") as zf:
+    zf.extractall()
+data = pd.read_csv("creditcard.csv", delimiter=",")
 
-churn = churn.drop("Phone", axis=1)
-churn["Area Code"] = churn["Area Code"].astype(object)
-churn = churn.drop(["Day Charge", "Eve Charge", "Night Charge", "Intl Charge"], axis=1)
+feature_columns = data.columns[:-1]
+label_column = data.columns[-1]
+features = data[feature_columns].values.astype("float32")
+labels = (data[label_column].values).astype("float32")
 
-model_data = pd.get_dummies(churn)
 model_data = pd.concat(
-    [model_data["Churn?_True."], model_data.drop(["Churn?_False.", "Churn?_True."], axis=1)], axis=1
+    [labels, features], axis=1
 )
 
 train_data, validation_data, test_data = np.split(

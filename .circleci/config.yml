@@ -6,11 +6,30 @@ executors:
       - image: python:3.11
 
 jobs:
-  model1:
+  # model1:
+  #   executor: python
+  #   environment:
+  #     MODEL_NAME: model1
+  #     MODEL_DESC: model1 description text
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: install python dependencies
+  #         command: pip install -r requirements.txt --upgrade
+  #     - run:
+  #         name: gather data
+  #         command: python model1/gather_data.py
+  #     - run:
+  #         name: train and register model
+  #         command: python model1/train_register.py
+  #     - run:
+  #         name: deploy model
+  #         command: python model1/deploy.py
+  model2:
     executor: python
     environment:
-      MODEL_NAME: model1
-      MODEL_DESC: model1 description text
+      MODEL_NAME: model2
+      MODEL_DESC: model2 description text
     steps:
       - checkout
       - run:
@@ -18,15 +37,18 @@ jobs:
           command: pip install -r requirements.txt --upgrade
       - run:
           name: gather data
-          command: python model1/gather_data.py
-      - run:
-          name: train and register model
-          command: python model1/train_register.py
-      - run:
-          name: deploy model
-          command: python model1/deploy.py
+          command: python model2/gather_data.py
+      # - run:
+      #     name: train and register model
+      #     command: python model2/train_register.py
+      # - run:
+      #     name: deploy model
+      #     command: python model2/deploy.py
 
 workflows:
-  model1-train-and-deploy:
+  # model1-train-and-deploy:
+  #   jobs:
+  #     - model1
+  model2-train-and-deploy:
     jobs:
-      - model1
+      - model2
