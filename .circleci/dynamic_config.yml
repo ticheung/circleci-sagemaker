@@ -57,8 +57,16 @@ workflows:
   abalone-train-and-deploy:
     when: << pipeline.parameters.deploy-abalone >>
     jobs:
-      - abalone-model
+      - abalone-model:
+          filters:
+            branches:
+              only:
+                - main
   churn-train-and-deploy:
     when: << pipeline.parameters.deploy-churn >>
     jobs:
       - churn-model
+          filters:
+            branches:
+              only:
+                - main
