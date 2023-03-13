@@ -1,4 +1,3 @@
-import sagemaker
 import boto3
 import pandas as pd
 import numpy as np
@@ -17,7 +16,7 @@ s3_client = boto_session.client(service_name="s3")
 
 # Data retrieval and processing taken from
 # https://github.com/aws/amazon-sagemaker-examples/blob/main/introduction_to_applying_machine_learning/xgboost_customer_churn/xgboost_customer_churn.ipynb
-# You would likely replace this part for your own use case, such as querying from Snowflake
+# You would likely replace this part for your own use case, such as querying from Snowflake or Redshift
 s3_client.download_file(f"sagemaker-sample-files", "datasets/tabular/synthetic/churn.txt", "churn.txt")
 churn = pd.read_csv("./churn.txt")
 
