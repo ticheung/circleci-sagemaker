@@ -1,3 +1,7 @@
+import os
+print("PYTHONPATH:", os.environ.get('PYTHONPATH'))
+print("PATH:", os.environ.get('PATH'))
+
 import sagemaker
 from sagemaker.estimator import Estimator
 from sagemaker.inputs import TrainingInput
@@ -68,7 +72,7 @@ create_endpoint_config_response = sagemaker_client.create_endpoint_config(
             "InstanceType": endpoint_instance_type,
             "InitialVariantWeight": 1,
             "InitialInstanceCount": endpoint_instance_count,
-            "ModelName": model_name,
+            "ModelName": timed_model_name,
             "VariantName": "AllTraffic",
         }
     ]
