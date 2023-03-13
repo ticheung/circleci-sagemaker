@@ -33,7 +33,7 @@ sagemaker_session = sagemaker.Session(
 # Get the latest approved model package of the model group in question
 model_package_arn = sagemaker_client.list_model_packages(
     ModelPackageGroupName = model_name,
-    ModelPackageApprovalStatus = "Approved",
+    ModelApprovalStatus = "Approved",
     SortBy = "CreationTime",
     SortOrder = "Descending"
 )['ModelPackageSummaryList'][0]['ModelPackageArn']
@@ -74,6 +74,7 @@ create_endpoint_config_response = sagemaker_client.create_endpoint_config(
     ]
 )
 print(f"Created endpoint config ARN: {create_endpoint_config_response['EndpointConfigArn']}")
+
 
 # Get a list of existing endpoints with model_name
 endpoints_list = sagemaker_client.list_endpoints(
