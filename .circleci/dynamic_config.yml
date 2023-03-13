@@ -12,10 +12,6 @@ executors:
   python:
     docker:
       - image: python:3.11
-    environment:
-      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-      SAGEMAKER_EXECUTION_ROLE: $SAGEMAKER_EXECUTION_ROLE
  
 jobs:
   abalone-model:
