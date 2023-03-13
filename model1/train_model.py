@@ -10,10 +10,12 @@ import io
 bucket = os.environ["AWS_BUCKET"]
 region_name = os.environ["AWS_REGION"]
 model_name = os.environ["MODEL_NAME"]
+model_description = os.environ["MODEL_DESC"]
 role_arn = os.environ["SAGEMAKER_EXECUTION_ROLE_ARN"]
+print("model_description:", model_description)
 
 
-# Set up the session and client we will need for this step
+# Set up the sessions and clients we will need for this step
 boto_session = boto3.Session(region_name=region_name)
 sagemaker_client = boto_session.client(service_name="sagemaker")
 sagemaker_runtime_client = boto_session.client(service_name="sagemaker-runtime")
@@ -65,3 +67,46 @@ xgb_estimator.fit({"train": train_set_pointer, "validation": validation_set_poin
 
 training_job_name = xgb_estimator.latest_training_job.job_name
 print("training_job_name:", training_job_name)
+
+
+# In this section, we push the newly trained model to the model registry,
+# so that we may subsequently refer to it during deployment.
+# Check if model_name already exists as a model group in the model registry
+matching_mpg = sagemaker_client.list_model_package_groups(
+    NameContains = model_name
+)['ModelPackageGroupSummaryList']
+
+if matching_mpg:
+    print(f'Using existing Model Package Group: {model_name}')
+else:
+    mpg_input_dict = {
+        "ModelPackageGroupName": model_name,
+        "ModelPackageGroupDescription": model_description,
+    }
+    mpg_response = sagemaker_client.create_model_package_group(**mpg_input_dict)
+    mpg_arn = mpg_response['ModelPackageGroupArn']
+    print(f'Created new Model Package Group: {model_name}, ARN: {mpg_arn}')
+
+
+# Retrieve model artifacts from training job
+model_artifacts = xgb_estimator.model_data
+
+# Create pre-approved cross-account model package
+create_model_package_input_dict = {
+    "ModelPackageGroupName": model_name,
+    "ModelPackageDescription": "",
+    "ModelApprovalStatus": "Approved",
+    "InferenceSpecification": {
+        "Containers": [
+            {
+                "Image": image_uri,
+                "ModelDataUrl": model_artifacts
+            }
+        ],
+        "SupportedContentTypes": [ "text/csv" ],
+        "SupportedResponseMIMETypes": [ "text/csv" ]
+    }
+}
+
+create_model_package_response = sagemaker_client.create_model_package(**create_model_package_input_dict)
+print(f"Model Package version ARN: {create_model_package_response['ModelPackageArn']}")
