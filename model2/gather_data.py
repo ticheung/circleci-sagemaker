@@ -25,8 +25,8 @@ data_prefix = "datasets/tabular/uci_abalone"
 
 for data_category in ["train", "validation"]:
     data_key = "{0}/{1}/abalone.{1}".format(data_prefix, data_category)
-    output_key = "{0}/{1}/abalone.{1}".format(model_name, data_category)
-    data_filename = "{}.libsvm".format(data_category)
+    output_key = "{0}/{1}/{1}.libsvm".format(model_name, data_category)
+    data_filename = "abalone.{}".format(data_category)
     s3_client.download_file(data_bucket, data_key, data_filename)
     s3_client.upload_file(data_filename, bucket, output_key)
 
