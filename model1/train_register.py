@@ -2,17 +2,16 @@ import sagemaker
 from sagemaker.estimator import Estimator
 from sagemaker.inputs import TrainingInput
 import boto3
-import pandas as pd
-import numpy as np
 import os
-import io
 
+
+# Environment variables
+# See this link for more details: https://circleci.com/docs/set-environment-variable/
 bucket = os.environ["AWS_BUCKET"]
 region_name = os.environ["AWS_REGION"]
 model_name = os.environ["MODEL_NAME"]
 model_description = os.environ["MODEL_DESC"]
 role_arn = os.environ["SAGEMAKER_EXECUTION_ROLE_ARN"]
-print("model_description:", model_description)
 
 
 # Set up the sessions and clients we will need for this step
@@ -25,7 +24,7 @@ sagemaker_session = sagemaker.Session(
     sagemaker_runtime_client = sagemaker_runtime_client,
     default_bucket = bucket
 )
-# s3_client = boto_session.client(service_name="s3")
+
 
 # Set up dataset locations
 train_set_location = f"s3://{bucket}/{model_name}/train/"

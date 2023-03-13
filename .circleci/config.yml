@@ -6,7 +6,7 @@ executors:
       - image: python:3.11
 
 jobs:
-  model1-train-and-deploy:
+  model1:
     executor: python
     environment:
       MODEL_NAME: model1
@@ -20,10 +20,13 @@ jobs:
           name: gather data
           command: python model1/gather_data.py
       - run:
-          name: train model
-          command: python model1/train_model.py
+          name: train and register model
+          command: python model1/train_register.py
+      - run:
+          name: deploy model
+          command: python model1/deploy.py
 
 workflows:
-  model1:
+  model1-train-and-deploy:
     jobs:
-      - model1-train-and-deploy
+      - model1
