@@ -65,7 +65,7 @@ workflows:
   churn-train-and-deploy:
     when: << pipeline.parameters.deploy-churn >>
     jobs:
-      - churn-model
+      - churn-model:
           filters:
             branches:
               only:
