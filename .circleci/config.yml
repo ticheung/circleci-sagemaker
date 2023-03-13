@@ -25,11 +25,11 @@ jobs:
   #     - run:
   #         name: deploy model
   #         command: python model1/deploy.py
-  model2:
+  abalone-model:
     executor: python
     environment:
-      MODEL_NAME: model2
-      MODEL_DESC: model2 description text
+      MODEL_NAME: abalone-model
+      MODEL_DESC: abalone model description text
     steps:
       - checkout
       - run:
@@ -37,13 +37,13 @@ jobs:
           command: pip install -r requirements.txt --upgrade
       - run:
           name: gather data
-          command: python model2/gather_data.py
-      # - run:
-      #     name: train and register model
-      #     command: python model2/train_register.py
-      # - run:
-      #     name: deploy model
-      #     command: python model2/deploy.py
+          command: python abalone_model/gather_data.py
+      - run:
+          name: train and register model
+          command: python abalone_model/train_register.py
+      - run:
+          name: deploy model
+          command: python abalone_model/deploy.py
 
 workflows:
   # model1-train-and-deploy:
@@ -51,4 +51,4 @@ workflows:
   #     - model1
   model2-train-and-deploy:
     jobs:
-      - model2
+      - abalone-model
