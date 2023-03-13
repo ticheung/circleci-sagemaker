@@ -1,10 +1,10 @@
 version: 2.1
 
 parameters:
-  deploy-model1:
+  deploy-abalone:
     type: boolean
     default: false
-  deploy-model2:
+  deploy-churn:
     type: boolean
     default: false
 
@@ -16,32 +16,53 @@ executors:
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
       SAGEMAKER_EXECUTION_ROLE: $SAGEMAKER_EXECUTION_ROLE
-      # MY_ENV_VAR: $MY_ENV_VAR
  
 jobs:
-  # example-job:
-  #   executor: python
-  #   steps:
-  #     - checkout
-  #     - run: echo $MY_ENV_VAR
-  #     - run: pip install -r requirements.txt --upgrade
-  gather-data:
+  abalone-model:
     executor: python
+    environment:
+      MODEL_NAME: abalone-model
+      MODEL_DESC: abalone model description text
     steps:
       - checkout
-      - run: echo $AWS_ACCESS_KEY_ID
-      - run: pip install -r requirements.txt --upgrade
-      - run: python model1/gather_data.py
+      - run:
+          name: install python dependencies
+          command: pip install -r requirements.txt --upgrade
+      - run:
+          name: gather data
+          command: python abalone_model/gather_data.py
+      - run:
+          name: train and register model
+          command: python abalone_model/train_register.py
+      - run:
+          name: deploy model
+          command: python abalone_model/deploy.py
+  churn-model:
+    executor: python
+    environment:
+      MODEL_NAME: churn-model
+      MODEL_DESC: churn model description text
+    steps:
+      - checkout
+      - run:
+          name: install python dependencies
+          command: pip install -r requirements.txt --upgrade
+      - run:
+          name: gather data
+          command: python churn_model/gather_data.py
+      - run:
+          name: train and register model
+          command: python churn_model/train_register.py
+      - run:
+          name: deploy model
+          command: python churn_model/deploy.py
 
 workflows:
-  # example-workflow:
-  #   jobs:
-  #     - example-job
-  model1:
-    when: << pipeline.parameters.deploy-model1 >>
+  abalone-train-and-deploy:
+    when: << pipeline.parameters.deploy-abalone >>
     jobs:
-      - gather-data
-  model2:
-    when: << pipeline.parameters.deploy-model2 >>
+      - abalone-model
+  churn-train-and-deploy:
+    when: << pipeline.parameters.deploy-churn >>
     jobs:
-      - gather-data
+      - churn-model
