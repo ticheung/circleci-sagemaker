@@ -16,33 +16,46 @@ s3_client = boto_session.client(service_name="s3")
 
 
 # Data retrieval and processing taken from
-# https://github.com/aws/amazon-sagemaker-examples/blob/main/introduction_to_applying_machine_learning/credit_card_fraud_detector/credit_card_fraud_detector.ipynb
+# https://github.com/aws/amazon-sagemaker-examples/blob/main/introduction_to_amazon_algorithms/xgboost_abalone/xgboost_abalone.ipynb
 # You would likely replace this part for your own use case, such as querying from Snowflake or Redshift
-s3_client.download_file(f"sagemaker-solutions-prod", "Fraud-detection-using-machine-learning/3.4.1/data/creditcardfraud.zip", "creditcardfraud.zip")
-with ZipFile("creditcardfraud.zip", "r") as zf:
-    zf.extractall()
-data = pd.read_csv("creditcard.csv", delimiter=",")
 
-feature_columns = data.columns[:-1]
-label_column = data.columns[-1]
-features = data[feature_columns].values.astype("float32")
-labels = (data[label_column].values).astype("float32")
+# S3 bucket where the training data is located
+data_bucket = f"sagemaker-sample-files"
+data_prefix = "datasets/tabular/uci_abalone"
 
-model_data = pd.concat(
-    [labels, features], axis=1
-)
-
-train_data, validation_data, test_data = np.split(
-    model_data.sample(frac=1, random_state=1729),
-    [int(0.7 * len(model_data)), int(0.9 * len(model_data))],
-)
+for data_category in ["train", "test", "validation"]:
+    data_key = "{0}/{1}/abalone.{1}".format(data_prefix, data_category)
+    output_key = "{0}/{1}/abalone.{1}".format(model_name, data_category)
+    data_filename = "abalone.{}".format(data_category)
+    s3_client.download_file(data_bucket, data_key, data_filename)
+    s3_client.upload_file(data_filename, bucket, output_key)
 
 
-# Upload training and validation data to S3
-csv_buffer = io.BytesIO()
-train_data.to_csv(csv_buffer, index=False)
-s3_client.put_object(Bucket=bucket, Body=csv_buffer.getvalue(), Key=f"{model_name}/train/train.csv")
+# s3_client.download_file(f"sagemaker-sample-files", "datasets/tabular/uci_abalone/train/creditcardfraud.zip", "creditcardfraud.zip")
+# with ZipFile("creditcardfraud.zip", "r") as zf:
+#     zf.extractall()
+# data = pd.read_csv("creditcard.csv", delimiter=",")
 
-csv_buffer = io.BytesIO()
-validation_data.to_csv(csv_buffer, index=False)
-s3_client.put_object(Bucket=bucket, Body=csv_buffer.getvalue(), Key=f"{model_name}/validation/validation.csv")
+# feature_columns = data.columns[:-1]
+# label_column = data.columns[-1]
+# features = data[feature_columns].values.astype("float32")
+# labels = (data[label_column].values).astype("float32")
+
+# model_data = pd.concat(
+#     [labels, features], axis=1
+# )
+
+# train_data, validation_data, test_data = np.split(
+#     model_data.sample(frac=1, random_state=1729),
+#     [int(0.7 * len(model_data)), int(0.9 * len(model_data))],
+# )
+
+
+# # Upload training and validation data to S3
+# csv_buffer = io.BytesIO()
+# train_data.to_csv(csv_buffer, index=False)
+# s3_client.put_object(Bucket=bucket, Body=csv_buffer.getvalue(), Key=f"{model_name}/train/train.csv")
+
+# csv_buffer = io.BytesIO()
+# validation_data.to_csv(csv_buffer, index=False)
+# s3_client.put_object(Bucket=bucket, Body=csv_buffer.getvalue(), Key=f"{model_name}/validation/validation.csv")
