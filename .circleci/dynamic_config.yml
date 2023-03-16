@@ -78,18 +78,47 @@ workflows:
   abalone-model:
     when: << pipeline.parameters.deploy-abalone >>
     jobs:
-      - abalone-model-train
+      - abalone-model-train:
+          filters:
+            branches:
+              ignore:
+                - main
+      - request-deployment:
+          type: approval
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - abalone-model-train
       - abalone-model-deploy:
           filters:
             branches:
               only:
                 - main
+          requires:
+            - request-deployment
+
   churn-model:
     when: << pipeline.parameters.deploy-churn >>
     jobs:
-      - churn-model-train
+      - churn-model-train:
+          filters:
+            branches:
+              ignore:
+                - main
+      - request-deployment:
+          type: approval
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - churn-model-train
       - abalone-model-deploy:
           filters:
             branches:
               only:
                 - main
+          requires:
+            - request-deployment
