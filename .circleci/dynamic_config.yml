@@ -75,7 +75,7 @@ jobs:
           command: python churn_model/deploy.py
 
 workflows:
-  abalone-train-and-deploy:
+  abalone-model:
     when: << pipeline.parameters.deploy-abalone >>
     jobs:
       - abalone-model-train
@@ -84,7 +84,7 @@ workflows:
             branches:
               only:
                 - main
-  churn-train-and-deploy:
+  churn-model:
     when: << pipeline.parameters.deploy-churn >>
     jobs:
       - churn-model-train
