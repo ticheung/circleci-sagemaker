@@ -89,8 +89,6 @@ workflows:
             branches:
               only:
                 - main
-          requires:
-            - abalone-model-train
       - abalone-model-deploy:
           filters:
             branches:
@@ -113,8 +111,6 @@ workflows:
             branches:
               only:
                 - main
-          requires:
-            - churn-model-train
       - abalone-model-deploy:
           filters:
             branches:
