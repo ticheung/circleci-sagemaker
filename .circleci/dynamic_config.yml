@@ -87,15 +87,15 @@ workflows:
           type: approval
           filters:
             branches:
-              only:
+              ignore:
                 - main
+          requires:
+            - abalone-model-train
       - abalone-model-deploy:
           filters:
             branches:
               only:
                 - main
-          requires:
-            - request-deployment
 
   churn-model:
     when: << pipeline.parameters.deploy-churn >>
@@ -109,12 +109,12 @@ workflows:
           type: approval
           filters:
             branches:
-              only:
+              ignore:
                 - main
+          requires:
+            - request-deployment
       - abalone-model-deploy:
           filters:
             branches:
               only:
                 - main
-          requires:
-            - request-deployment
