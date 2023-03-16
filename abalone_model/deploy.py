@@ -3,7 +3,7 @@ import boto3
 import os
 from time import strftime, gmtime, sleep
 
- 
+
 # Environment variables
 # See this link for more details: https://circleci.com/docs/set-environment-variable/
 bucket = os.environ["AWS_BUCKET"]
