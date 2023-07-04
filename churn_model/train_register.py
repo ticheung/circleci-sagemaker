@@ -7,8 +7,8 @@ import os
 
 # Environment variables
 # See this link for more details: https://circleci.com/docs/set-environment-variable/
-bucket = os.environ["AWS_BUCKET"]
-region_name = os.environ["AWS_REGION"]
+bucket = "circleci-sagemaker"
+region_name = "us-east-1"
 model_name = os.environ["MODEL_NAME"]
 model_description = os.environ["MODEL_DESC"]
 role_arn = os.environ["SAGEMAKER_EXECUTION_ROLE_ARN"]

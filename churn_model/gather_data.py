@@ -4,8 +4,8 @@ import numpy as np
 import os
 import io
 
-bucket = os.environ["AWS_BUCKET"]
-region_name = os.environ["AWS_REGION"]
+bucket = "circleci-sagemaker"
+region_name = "us-east-1"
 model_name = os.environ["MODEL_NAME"]
 
 
