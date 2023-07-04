@@ -4,7 +4,7 @@ import os
 from time import strftime, gmtime, sleep
 
  
-# Environment variables
+# Environment variables 
 # See this link for more details: https://circleci.com/docs/set-environment-variable/
 bucket = os.environ["AWS_BUCKET"]
 region_name = os.environ["AWS_REGION"]
